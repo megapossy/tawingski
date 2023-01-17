@@ -9,6 +9,7 @@
     "typecheck": "nuxt typecheck"
   },
   "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.2.0",
     "nuxt": "^3.0.0"
   }
 }
