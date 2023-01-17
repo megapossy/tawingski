@@ -1,6 +1,6 @@
-# Tawingski
+# Nuxt 3 Minimal Starter
 
-Place where people are ohlala!
+Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
 ## Setup
 
@@ -39,3 +39,4 @@ Locally preview production build:
 npm run preview
 ```
 
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
