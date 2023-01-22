@@ -6,18 +6,19 @@
         <TWLogo />
         <h2
           class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
-          Sign in to your account
+          Sign up
         </h2>
       </div>
       <form class="mt-8 space-y-6" action="#" method="POST">
-        <div class="-space-y-px rounded-md shadow-sm">
+        <div class="rounded-md shadow-sm">
           <div>
             <label for="email-address" class="sr-only">Email address</label>
             <TWEmail />
           </div>
-          <div>
+          <div class="mt-6">
             <label for="password" class="sr-only">Password</label>
             <TWPassword />
+            <TWPassword class="mt-3" placeholder="Confirm Password" />
           </div>
         </div>
 
