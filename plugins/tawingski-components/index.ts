@@ -3,9 +3,8 @@
 // import CheckBox from "./components/checkbox.vue";
 import Components from "./components";
 
-import fs from "fs";
-import path from "path";
-const srcDir = path.resolve(__dirname);
+// import path from "path";
+// const srcDir = path.resolve(__dirname);
 
 export default defineNuxtPlugin((nuxtApp) => {
   for (const [compName, comp] of Object.entries(Components)) {
