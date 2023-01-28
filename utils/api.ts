@@ -28,7 +28,7 @@ export const api = async (option?: Option) => {
   // const retVal = await useFetch("/api/test");
   const retVal = useLazyFetch("/api/test");
 
-  console.log("api", retVal.data);
+  // console.log("api", retVal.data);
 
   return retVal;
 };

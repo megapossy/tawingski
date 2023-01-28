@@ -3,7 +3,7 @@
     class="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="w-full max-w-md space-y-8">
       <div>
-        <TWLogo />
+        <BaseLogo />
         <h2
           class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
           Sign up
@@ -12,30 +12,29 @@
       <form class="mt-8 space-y-6" action="#" method="POST">
         <div class="rounded-md shadow-sm">
           <div>
+            <label for="username" class="sr-only">Username</label>
+            <BaseInputText v-model="form.username" :placeholder="'Username'" />
+            <BaseInputError :errors="errors?.username" />
+          </div>
+          <div class="mt-3">
             <label for="email-address" class="sr-only">Email address</label>
-            <TWEmail />
+            <BaseInputEmail v-model="form.email" />
+            <BaseInputError :errors="errors?.email" />
           </div>
-          <div class="mt-6">
+          <div class="mt-8">
             <label for="password" class="sr-only">Password</label>
-            <TWPassword />
-            <TWPassword class="mt-3" placeholder="Confirm Password" />
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between">
-          <div class="flex items-center">
-            <TWCheckbox label="Remember Me" />
-          </div>
-
-          <div class="text-sm">
-            <a href="#" class="font-medium text-red-600 hover:text-red-500">
-              Forgot your password?
-            </a>
+            <BaseInputPassword v-model="form.password" />
+            <BaseInputError :errors="errors?.password" />
+            <BaseInputPassword
+              v-model="form.confirmPassword"
+              class="mt-3"
+              placeholder="Confirm Password" />
+            <BaseInputError :errors="errors?.confirmPassword" />
           </div>
         </div>
 
         <div>
-          <TWButton>
+          <BaseButton @click="vldte()">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3">
               <svg
                 class="h-5 w-5 text-white-500 group-hover:text-white-400"
@@ -49,8 +48,8 @@
                   clip-rule="evenodd" />
               </svg>
             </span>
-            Sign in
-          </TWButton>
+            Sign up
+          </BaseButton>
         </div>
       </form>
     </div>
@@ -58,16 +57,44 @@
 </template>
 
 <script setup lang="ts">
-import { api } from "@/lib/api";
+import Test from "@/components/test.vue";
 
-console.log("setup");
-
-let apiResult = ref();
 onMounted(async () => {
   console.log("onMounted");
-  // apiResult.value = await api();
 });
-apiResult.value = await api();
+
+const form = reactive({
+  username: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+});
+
+const username = computed(() => {
+  return form.username;
+});
+const errors = ref<ReturnType<typeof validateFields>>();
+
+const vldte = () => {
+  errors.value = validateFields([
+    {
+      field: "email",
+      value: form.email,
+    },
+    {
+      field: "username",
+      value: form.username,
+    },
+    {
+      field: "password",
+      value: form.password,
+    },
+    {
+      field: "confirmPassword",
+      value: form.confirmPassword,
+    },
+  ]);
+};
 </script>
 
 <style scoped></style>

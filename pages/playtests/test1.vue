@@ -7,8 +7,6 @@
 </template>
 
 <script setup lang="ts">
-import { api } from "@/lib/api";
-
 console.log("setup");
 
 let apiResult = ref();

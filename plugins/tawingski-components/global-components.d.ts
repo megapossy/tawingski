@@ -6,6 +6,7 @@ declare module "@vue/runtime-core" {
     TWLogo: typeof Components.Logo;
     TWCheckbox: typeof Components.Checkbox;
     TWEmail: typeof Components.Email;
+    TWText: typeof Components.Text;
     TWPassword: typeof Components.Password;
   }
 }
