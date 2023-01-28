@@ -34,7 +34,7 @@
         </div>
 
         <div>
-          <BaseButton @click="vldte()">
+          <BaseButton @click="submit()">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3">
               <svg
                 class="h-5 w-5 text-white-500 group-hover:text-white-400"
@@ -70,12 +70,8 @@ const form = reactive({
   confirmPassword: "",
 });
 
-const username = computed(() => {
-  return form.username;
-});
 const errors = ref<ReturnType<typeof validateFields>>();
-
-const vldte = () => {
+const validate = () => {
   errors.value = validateFields([
     {
       field: "email",
@@ -94,6 +90,13 @@ const vldte = () => {
       value: form.confirmPassword,
     },
   ]);
+};
+
+const submit = () => {
+  validate();
+  if (!errors.value) {
+    alert("SUBMITTING!");
+  }
 };
 </script>
 
