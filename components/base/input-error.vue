@@ -1,5 +1,7 @@
 <template>
-  <div class="text-red-600 m-3" v-if="errors.length">
+  <div
+    class="text-red-600 m-3"
+    v-if="errors.length && typeof errors === 'object'">
     <p>
       {{ errors[0] }}
     </p>

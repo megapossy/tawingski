@@ -31,6 +31,19 @@ export class Firebase {
     return getAuth(this._app);
   }
 
+  async createUserWithEmailAndPassword(email: string, password: string) {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        this.auth,
+        email,
+        password
+      );
+      return userCredential;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   /**
    * Returns a copy of the config
    */

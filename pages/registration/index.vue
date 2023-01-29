@@ -1,7 +1,7 @@
 <template>
   <div
     class="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="w-full max-w-md space-y-8">
+    <div class="container">
       <div>
         <BaseLogo />
         <h2
@@ -64,17 +64,21 @@
 
 <script setup lang="ts">
 import Test from "@/components/test.vue";
+import { useUserStore as useFBUserStore } from "@/store/useFirebase";
+
+const fbUserStore = useFBUserStore();
 
 onMounted(async () => {
   console.log("onMounted");
 });
 
 const form = reactive({
-  username: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
+  username: "usernametawing",
+  email: "yabuking84@gmail.com",
+  password: "asdasdasd",
+  confirmPassword: "asdasdasd",
 });
+const isValidating = ref(false);
 
 const errors = ref<Awaited<ReturnType<typeof validateFields>>>();
 const validate = async () => {
@@ -98,8 +102,6 @@ const validate = async () => {
   ]);
 };
 
-const isValidating = ref(false);
-
 const submit = async () => {
   isValidating.value = true;
   try {
@@ -108,9 +110,20 @@ const submit = async () => {
     errors.value = {};
   } catch (error: any) {
     errors.value = error;
+    isValidating.value = false;
+    return;
   }
-  if (!errors.value) {
-    alert("SUBMITTING!");
+
+  try {
+    // craete user
+    await fbUserStore.instance?.createUserWithEmailAndPassword(
+      form.email,
+      form.password
+    );
+  } catch (error) {
+    console.error(error);
+    isValidating.value = false;
+    return;
   }
   isValidating.value = false;
 };
@@ -119,5 +132,9 @@ const submit = async () => {
 <style scoped lang="scss">
 .big-text .yo {
   color: $grn;
+}
+
+.container {
+  @apply w-full max-w-md space-y-8;
 }
 </style>

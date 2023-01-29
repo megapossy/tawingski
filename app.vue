@@ -7,6 +7,11 @@
 <script setup lang="ts">
 // onMounted;
 // const firebase = provide()
+
+onMounted(() => {
+  // init firebase
+  useFirebase().actions.init.user();
+});
 </script>
 
 <style scoped></style>
