@@ -1,0 +1,8 @@
+@import "variables";
+
+.big-text {
+  @apply text-7xl font-extrabold text-red-600 text-center;
+  span {
+    color: $yellow;
+  }
+}

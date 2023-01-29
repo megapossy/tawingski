@@ -9,8 +9,14 @@
           Sign up
         </h2>
       </div>
+      <h1 class="big-text">
+        TEST
+        <span>this is yellow</span>
+        <span class="yo">this is green</span>
+      </h1>
+
       <form class="mt-8 space-y-6" action="#" method="POST">
-        <div class="rounded-md shadow-sm">
+        <div class="">
           <div>
             <label for="username" class="sr-only">Username</label>
             <BaseInputText v-model="form.username" :placeholder="'Username'" />
@@ -34,7 +40,7 @@
         </div>
 
         <div>
-          <BaseButton @click="submit()">
+          <BaseButton @click="submit()" :is-loading="isValidating">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3">
               <svg
                 class="h-5 w-5 text-white-500 group-hover:text-white-400"
@@ -70,9 +76,9 @@ const form = reactive({
   confirmPassword: "",
 });
 
-const errors = ref<ReturnType<typeof validateFields>>();
-const validate = () => {
-  errors.value = validateFields([
+const errors = ref<Awaited<ReturnType<typeof validateFields>>>();
+const validate = async () => {
+  errors.value = await validateFields([
     {
       field: "email",
       value: form.email,
@@ -92,12 +98,26 @@ const validate = () => {
   ]);
 };
 
-const submit = () => {
-  validate();
+const isValidating = ref(false);
+
+const submit = async () => {
+  isValidating.value = true;
+  try {
+    await validate();
+    console.log("errors.value", errors.value);
+    errors.value = {};
+  } catch (error: any) {
+    errors.value = error;
+  }
   if (!errors.value) {
     alert("SUBMITTING!");
   }
+  isValidating.value = false;
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.big-text .yo {
+  color: $green;
+}
+</style>

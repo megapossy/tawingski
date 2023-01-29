@@ -6,6 +6,7 @@ import InputEmail from "./input-email.vue";
 import InputText from "./input-text.vue";
 import InputPassword from "./input-password.vue";
 import InputError from "./input-error.vue";
+import Spinner from "./spinner.vue";
 
 declare module "@vue/runtime-core" {
   export interface GlobalComponents {
@@ -16,5 +17,6 @@ declare module "@vue/runtime-core" {
     BaseInputText: typeof InputText;
     BaseInputPassword: typeof InputPassword;
     BaseInputError: typeof InputError;
+    BaseSpinner: typeof Spinner;
   }
 }

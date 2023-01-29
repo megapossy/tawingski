@@ -9,4 +9,14 @@ export default defineNuxtConfig({
     server: true,
     client: true,
   },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData:
+            '@import "@/assets/styles/scss/components.scss"; @import "@/assets/styles/scss/variables";',
+        },
+      },
+    },
+  },
 });

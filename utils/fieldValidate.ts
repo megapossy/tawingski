@@ -1,5 +1,7 @@
 import vj from "validate.js";
 
+import { huwaits } from "@/utils/helpers";
+
 type FieldType = "username" | "password" | "confirmPassword" | "email";
 
 type Constraint = {
@@ -7,10 +9,32 @@ type Constraint = {
   value: (string | number) | (string | number)[];
 };
 
+type FieldConstraint = Partial<Record<FieldType, string[]>>;
+
+const checkEmailDuplicate = async (
+  value: string | number,
+  options: boolean,
+  key: string,
+  attributes: FieldConstraint
+) => {
+  console.log("checkEmailDuplicate", {
+    value,
+    options,
+    key,
+    attributes,
+  });
+
+  // if (value === "asd@ggg.com") return undefined;
+  // else return "Duplicate Email!";
+
+  return undefined;
+};
+
 const VContraints = {
   email: {
     presence: true,
     email: true,
+    checkEmailDuplicate: true,
   },
   username: {
     presence: true,
@@ -33,13 +57,16 @@ const VContraints = {
   },
   confirmPassword: {
     presence: true,
-    equality: "password",
+    equality: {
+      attribute: "password",
+      message: "^Passwords are not equal",
+    },
   },
 };
 
-export const validateFields = (
+export const validateFields = async (
   toValidate: Constraint[]
-): Partial<Record<FieldType, string[]>> => {
+): Promise<FieldConstraint> => {
   let _values = {};
   let _contraints = {};
 
@@ -55,5 +82,8 @@ export const validateFields = (
     };
   });
 
-  return vj.validate(_values, _contraints);
+  // custom validators
+  vj.validators.checkEmailDuplicate = checkEmailDuplicate;
+
+  return await vj.async(_values, _contraints);
 };
