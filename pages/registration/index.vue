@@ -9,7 +9,7 @@
           Sign up
         </h2>
       </div>
-      <h1 class="big-text">
+      <h1 class="big-text hide">
         TEST
         <span>this is yellow</span>
         <span class="yo">this is green</span>
@@ -118,6 +118,6 @@ const submit = async () => {
 
 <style scoped lang="scss">
 .big-text .yo {
-  color: $green;
+  color: $grn;
 }
 </style>
