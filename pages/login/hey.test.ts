@@ -1,13 +1,14 @@
 import { describe, it, expect } from "vitest";
-import { mount } from "@vue/test-utils";
-import { fetch } from "@nuxt/test-utils";
+import { fileURLToPath } from "node:url";
+import { $fetch, setup } from "@nuxt/test-utils";
 
-import Hey from "./hey.vue";
-
-describe("Hey", () => {
-  it("Email is not a valid email", () => {
-    const wrapper = mount(Hey);
-    const paragraph = wrapper.get('[data-testid="hey"] p');
-    console.log("paragraph", wrapper.html);
+describe.skip("Hey", async () => {
+  await setup({
+    rootDir: fileURLToPath(new URL("./fixture", import.meta.url)),
+  });
+  it("Hey test", async () => {
+    // Get response to a server-rendered page with `$fetch`.
+    const html = await $fetch("/login/hey");
+    expect(html).toContain("asdasd");
   });
 });

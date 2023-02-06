@@ -53,7 +53,7 @@ const VContraints = {
   email: {
     presence: true,
     email: true,
-    checkEmailDuplicate: true,
+    // checkEmailDuplicate: false,
   },
   username: {
     presence: true,
@@ -66,7 +66,7 @@ const VContraints = {
       flags: "i",
       message: "can only contain a-z, 0-9 and underscore",
     },
-    checkUsernameDuplicate: true,
+    // checkUsernameDuplicate: false,
   },
   password: {
     presence: true,
@@ -84,9 +84,44 @@ const VContraints = {
   },
 };
 
-export const validateFields = async (
+export const validateFieldsAsync = async (
   toValidate: Constraint[]
 ): Promise<FieldConstraint> => {
+  let _values = {};
+  let _contraints = {};
+
+  // async validators
+  // custom validators asynchronous
+  const VContraintsAsync = {
+    ...VContraints,
+    email: {
+      ...VContraints.email,
+      checkEmailDuplicate: true,
+    },
+    username: {
+      ...VContraints.username,
+      checkUsernameDuplicate: true,
+    },
+  };
+  vj.validators.checkEmailDuplicate = checkEmailDuplicate;
+  vj.validators.checkUsernameDuplicate = checkUsernameDuplicate;
+
+  toValidate.forEach((el) => {
+    _values = {
+      ..._values,
+
+      [el.field]: el.value,
+    };
+    _contraints = {
+      ..._contraints,
+      [el.field]: VContraintsAsync[el.field],
+    };
+  });
+
+  return await vj.async(_values, _contraints);
+};
+
+export const validateFields = (toValidate: Constraint[]): FieldConstraint => {
   let _values = {};
   let _contraints = {};
 
@@ -102,9 +137,5 @@ export const validateFields = async (
     };
   });
 
-  // custom validators
-  vj.validators.checkEmailDuplicate = checkEmailDuplicate;
-  vj.validators.checkUsernameDuplicate = checkUsernameDuplicate;
-
-  return await vj.async(_values, _contraints);
+  return vj(_values, _contraints);
 };

@@ -1,12 +1,10 @@
 import { describe, it, expect } from "vitest";
 import { mount } from "@vue/test-utils";
 
-import Login from "~~/pages/login/index.vue";
+import Login from "./index.vue";
 
-describe.skip("Login", () => {
-  it("Email is not a valid email", () => {
-    // const wrapperLogin = mount(Login);
-    // const paragraph = wrapperLogin.get('[data-testid="email-error"] p');
-    // console.log("paragraph", wrapperLogin.html);
+describe("Login", async () => {
+  it("Email is not a valid email", async () => {
+    const wrapper = mount(Login);
   });
 });

@@ -1,11 +1,26 @@
-import { useStore as useUserProfileStore } from "~~/store/user/useProfile";
-import type { UserType } from "~~/store/user/useProfile";
+import { useStore as useUserProfileStore } from "@/store/user/useProfile";
+import type { UserType } from "@/store/user/useProfile";
 import { useStore as useFBUserStore } from "@/store/useFirebase";
+
+import { validateFields } from "@/utils/fieldValidate";
+import { error as er } from "@/utils/error";
 
 export class User {
   private _email: string;
 
+  /**
+   * Email must be valid
+   * @param email
+   */
   constructor(email: string) {
+    const hasErrors = validateFields([
+      {
+        field: "email",
+        value: email,
+      },
+    ]);
+    if (hasErrors.email?.length) throw er.createError("Invalid Email!");
+
     this._email = email;
   }
 

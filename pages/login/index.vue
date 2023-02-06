@@ -59,6 +59,8 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, reactive, ref } from "vue";
+
 import { User as UserModel } from "~~/models/User";
 
 onMounted(async () => {

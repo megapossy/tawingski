@@ -7,13 +7,13 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck",
-    "test:unit": "vitest --config ./vitest.config.ts"
+    "test": "vitest",
+    "test:config": "vitest --config ./vitest.config.ts"
   },
   "devDependencies": {
     "@nuxt/test-utils": "^3.1.2",
     "@nuxtjs/tailwindcss": "^6.2.0",
     "@pinia-plugin-persistedstate/nuxt": "^1.0.0",
-    "@vitejs/plugin-vue": "^4.0.0",
     "@vue/test-utils": "^2.2.10",
     "@vueuse/core": "^9.11.1",
     "jsdom": "^21.1.0",
