@@ -25,7 +25,26 @@ const checkEmailDuplicate = async (
   });
 
   // if (value === "asd@ggg.com") return undefined;
-  // else return "Duplicate Email!";
+  // else return "^Duplicate Email!";
+
+  return undefined;
+};
+
+const checkUsernameDuplicate = async (
+  value: string | number,
+  options: boolean,
+  key: string,
+  attributes: FieldConstraint
+) => {
+  console.log("checkUsernameDuplicate", {
+    value,
+    options,
+    key,
+    attributes,
+  });
+
+  if (value === "asdf1234") return undefined;
+  else return "^Duplicate Username!";
 
   return undefined;
 };
@@ -47,6 +66,7 @@ const VContraints = {
       flags: "i",
       message: "can only contain a-z, 0-9 and underscore",
     },
+    checkUsernameDuplicate: true,
   },
   password: {
     presence: true,
@@ -84,6 +104,7 @@ export const validateFields = async (
 
   // custom validators
   vj.validators.checkEmailDuplicate = checkEmailDuplicate;
+  vj.validators.checkUsernameDuplicate = checkUsernameDuplicate;
 
   return await vj.async(_values, _contraints);
 };

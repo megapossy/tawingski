@@ -3,27 +3,29 @@
     class="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="w-full max-w-md space-y-8">
       <div>
-        <TWLogo />
+        <BaseLogo />
         <h2
           class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
           Sign in to your account
         </h2>
       </div>
       <form class="mt-8 space-y-6" action="#" method="POST">
-        <div class="-space-y-px rounded-md shadow-sm">
+        <div class="">
           <div>
             <label for="email-address" class="sr-only">Email address</label>
-            <TWEmail />
+            <BaseInputEmail v-model="form.email" />
+            <BaseInputError data-testid="email-error" :errors="errors?.email" />
           </div>
           <div>
             <label for="password" class="sr-only">Password</label>
-            <TWPassword />
+            <BaseInputPassword v-model="form.password" class="mt-2" />
+            <BaseInputError :errors="errors?.password" />
           </div>
         </div>
 
         <div class="flex items-center justify-between">
           <div class="flex items-center">
-            <TWCheckbox label="Remember Me" />
+            <BaseCheckbox label="Remember Me" />
           </div>
 
           <div class="text-sm">
@@ -34,7 +36,7 @@
         </div>
 
         <div>
-          <TWButton>
+          <BaseButton @click="submit()" :is-loading="isLoading">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3">
               <svg
                 class="h-5 w-5 text-white-500 group-hover:text-white-400"
@@ -49,13 +51,65 @@
               </svg>
             </span>
             Sign in
-          </TWButton>
+          </BaseButton>
         </div>
       </form>
     </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { User as UserModel } from "~~/models/User";
 
-<style scoped></style>
+onMounted(async () => {
+  console.log("onMounted");
+});
+
+const form = reactive({
+  email: "",
+  password: "",
+});
+const isLoading = ref(false);
+
+const errors = ref<Awaited<ReturnType<typeof validateFields>>>();
+const validate = async () => {
+  errors.value = await validateFields([
+    {
+      field: "email",
+      value: form.email,
+    },
+    {
+      field: "password",
+      value: form.password,
+    },
+  ]);
+};
+
+const submit = async () => {
+  isLoading.value = true;
+  try {
+    await validate();
+    console.log("errors.value", errors.value);
+    errors.value = {};
+  } catch (error: any) {
+    console.log("validate", errors);
+    errors.value = error;
+    isLoading.value = false;
+    return;
+  }
+
+  try {
+    const user = new UserModel(form.email);
+    // signin user
+    await user.signIn(form.password);
+  } catch (error: any) {
+    console.error(error);
+    isLoading.value = false;
+    return;
+  }
+
+  isLoading.value = false;
+};
+</script>
+
+<style scoped lang="scss"></style>

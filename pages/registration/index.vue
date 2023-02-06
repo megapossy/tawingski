@@ -63,20 +63,17 @@
 </template>
 
 <script setup lang="ts">
-import Test from "@/components/test.vue";
-import { useUserStore as useFBUserStore } from "@/store/useFirebase";
-
-const fbUserStore = useFBUserStore();
+import { User as UserModel } from "~~/models/User";
 
 onMounted(async () => {
   console.log("onMounted");
 });
 
 const form = reactive({
-  username: "usernametawing",
-  email: "yabuking84@gmail.com",
-  password: "asdasdasd",
-  confirmPassword: "asdasdasd",
+  username: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
 });
 const isValidating = ref(false);
 
@@ -109,22 +106,22 @@ const submit = async () => {
     console.log("errors.value", errors.value);
     errors.value = {};
   } catch (error: any) {
+    console.log("validate", errors);
     errors.value = error;
     isValidating.value = false;
     return;
   }
 
   try {
-    // craete user
-    await fbUserStore.instance?.createUserWithEmailAndPassword(
-      form.email,
-      form.password
-    );
+    const user = new UserModel(form.email);
+    // register user
+    await user.register(form.password);
   } catch (error) {
     console.error(error);
     isValidating.value = false;
     return;
   }
+
   isValidating.value = false;
 };
 </script>

@@ -1,5 +1,5 @@
 import { Firebase } from "@/services/Firebase";
-import { useUserStore as useFBUserStore } from "@/store/useFirebase";
+import { useStore as useFBUserStore } from "@/store/useFirebase";
 
 const _useFirebase = {
   actions: {
