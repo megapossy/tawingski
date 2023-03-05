@@ -5,6 +5,18 @@ import {
 } from "firebase/auth";
 import { initializeApp } from "firebase/app";
 import type { FirebaseApp } from "firebase/app";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  getDocs,
+  setDoc,
+  addDoc,
+  collection,
+  query,
+  where,
+} from "firebase/firestore";
+import type { QueryFieldFilterConstraint } from "firebase/firestore";
 
 export interface FirebaseConfig {
   apiKey: string;
@@ -35,6 +47,10 @@ export class Firebase {
     return getAuth(this._app);
   }
 
+  get db() {
+    return getFirestore(this._app);
+  }
+
   async createUserWithEmailAndPassword(email: string, password: string) {
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -45,6 +61,52 @@ export class Firebase {
       return userCredential;
     } catch (error) {
       throw error;
+    }
+  }
+
+  /**
+   * Write to Firebase DB
+   * @param args args[0] _collection
+   * @param args args[1] _document
+   * @param args args[1] _data if no _document (args.length == 2), this is the data to be set
+   * @param args args[2] _data this is the data to be set
+   */
+  async write(...args: (string | any)[]) {
+    if (args.length === 2) {
+      const _collection = args[0];
+      const _data = args[1];
+      addDoc(collection(this.db, _collection), _data);
+    } else if (args.length === 3) {
+      const _collection = args[0];
+      const _document = args[1];
+      const _data = args[2];
+      setDoc(doc(this.db, _collection, _document), _data, { merge: true });
+    }
+  }
+
+  async read(
+    _collection: string,
+    _data: {
+      field: string;
+      value: string | number;
+      operator?: "<" | "<=" | "==" | ">" | ">=" | "!=";
+    }[]
+  ) {
+    // set wheres
+    const _wheres: QueryFieldFilterConstraint[] = [];
+    _data.forEach((el) => {
+      _wheres.push(where(el.field, el.operator || "==", el.value));
+    });
+
+    const _query = query(collection(this.db, _collection), ..._wheres);
+    const querySnapshot = await getDocs(_query);
+    if (querySnapshot.size) {
+      return querySnapshot;
+    } else {
+      throw error.create(
+        "Data not found!",
+        DATA_ERROR_CODES_ENUM.DATA_NOT_EXISTS
+      );
     }
   }
 
@@ -71,9 +133,26 @@ export class Firebase {
       return undefined;
     }
   }
+
+  // static methods
+  /////////////////
+  static errorMessage(
+    errorCode: AUTH_ERROR_CODES_ENUM | DATA_ERROR_CODES_ENUM
+  ) {
+    if (errorCode === AUTH_ERROR_CODES_ENUM.EMAIL_EXISTS) {
+      return "Email already exists!";
+    } else if (errorCode === DATA_ERROR_CODES_ENUM.USER_EXISTS) {
+      return "User already exists!";
+    } else return "Error!";
+  }
 }
 
-enum AUTH_ERROR_CODES_ENUM {
+export enum DATA_ERROR_CODES_ENUM {
+  USER_EXISTS = "user/user-exists",
+  DATA_NOT_EXISTS = "data/data-not-exists",
+}
+
+export enum AUTH_ERROR_CODES_ENUM {
   ADMIN_ONLY_OPERATION = "auth/admin-restricted-operation",
   ARGUMENT_ERROR = "auth/argument-error",
   APP_NOT_AUTHORIZED = "auth/app-not-authorized",

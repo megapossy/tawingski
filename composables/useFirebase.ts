@@ -1,13 +1,13 @@
 import { Firebase } from "@/services/Firebase";
-import { useStore as useFBUserStore } from "@/store/useFirebase";
+import { useStore as useFBStore } from "@/store/useFirebase";
 
 const _useFirebase = {
   actions: {
     init: {
-      user: () => {
-        const fbUserStore = useFBUserStore();
-        fbUserStore.instance = new Firebase(config.firebase);
-        return fbUserStore.instance;
+      the: () => {
+        const fbStore = useFBStore();
+        fbStore.instance = new Firebase(config.firebase);
+        return fbStore.instance;
       },
     },
   },

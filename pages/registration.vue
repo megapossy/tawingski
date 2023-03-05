@@ -13,6 +13,7 @@
         TEST
         <span>this is yellow</span>
         <span class="yo">this is green</span>
+        x{{ errors?.misc }}x
       </h1>
 
       <form class="mt-8 space-y-6" action="#" method="POST">
@@ -37,6 +38,8 @@
               placeholder="Confirm Password" />
             <BaseInputError :errors="errors?.confirmPassword" />
           </div>
+
+          <BaseInputError :errors="errors?.misc" />
         </div>
 
         <div>
@@ -64,37 +67,44 @@
 
 <script setup lang="ts">
 import { User as UserModel } from "~~/models/User";
+import { Firebase } from "~~/services/Firebase";
 
 onMounted(async () => {
   console.log("onMounted");
 });
 
-const form = reactive({
-  username: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
+const form = ref({
+  username: "asdasdasd",
+  email: "yabuking84@gmail.com",
+  password: "asdasdasd",
+  confirmPassword: "asdasdasd",
 });
 const isValidating = ref(false);
 
-const errors = ref<Awaited<ReturnType<typeof validateFields>>>();
+const errors = ref<{
+  username?: string[];
+  email?: string[];
+  password?: string[];
+  confirmPassword?: string[];
+  misc?: string[];
+}>();
 const validate = async () => {
-  errors.value = await validateFields([
+  errors.value = await validateFieldsAsync([
     {
       field: "email",
-      value: form.email,
+      value: form.value.email,
     },
     {
       field: "username",
-      value: form.username,
+      value: form.value.username,
     },
     {
       field: "password",
-      value: form.password,
+      value: form.value.password,
     },
     {
       field: "confirmPassword",
-      value: form.confirmPassword,
+      value: form.value.confirmPassword,
     },
   ]);
 };
@@ -103,21 +113,19 @@ const submit = async () => {
   isValidating.value = true;
   try {
     await validate();
-    console.log("errors.value", errors.value);
-    errors.value = {};
   } catch (error: any) {
-    console.log("validate", errors);
     errors.value = error;
     isValidating.value = false;
     return;
   }
 
   try {
-    const user = new UserModel(form.email);
     // register user
-    await user.register(form.password);
-  } catch (error) {
-    console.error(error);
+    await UserModel.register(form.value);
+  } catch (error: any) {
+    errors.value = {
+      misc: [Firebase.errorMessage(error.code)],
+    };
     isValidating.value = false;
     return;
   }

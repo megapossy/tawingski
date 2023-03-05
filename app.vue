@@ -10,7 +10,7 @@
 
 onMounted(() => {
   // init firebase
-  useFirebase().actions.init.user();
+  useFirebase().actions.init.the();
 });
 </script>
 

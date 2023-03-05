@@ -12,6 +12,7 @@ export const useStore = defineStore("user.profile", {
   state: () => {
     return {
       data: {
+        uid: "",
         username: "",
         email: "",
         firstName: "",

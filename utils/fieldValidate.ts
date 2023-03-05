@@ -1,6 +1,7 @@
 import vj from "validate.js";
 
 import { huwaits } from "@/utils/helpers";
+import { error as er } from "@/utils/error";
 
 type FieldType = "username" | "password" | "confirmPassword" | "email";
 
@@ -17,12 +18,12 @@ const checkEmailDuplicate = async (
   key: string,
   attributes: FieldConstraint
 ) => {
-  console.log("checkEmailDuplicate", {
-    value,
-    options,
-    key,
-    attributes,
-  });
+  // console.log("checkEmailDuplicate", {
+  //   value,
+  //   options,
+  //   key,
+  //   attributes,
+  // });
 
   // if (value === "asd@ggg.com") return undefined;
   // else return "^Duplicate Email!";
@@ -36,15 +37,15 @@ const checkUsernameDuplicate = async (
   key: string,
   attributes: FieldConstraint
 ) => {
-  console.log("checkUsernameDuplicate", {
-    value,
-    options,
-    key,
-    attributes,
-  });
+  // console.log("checkUsernameDuplicate", {
+  //   value,
+  //   options,
+  //   key,
+  //   attributes,
+  // });
 
-  if (value === "asdf1234") return undefined;
-  else return "^Duplicate Username!";
+  // if (value === "asdf1234") return undefined;
+  // else return "^Duplicate Username!";
 
   return undefined;
 };

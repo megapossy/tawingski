@@ -1,12 +1,15 @@
 import { useStore as useUserProfileStore } from "@/store/user/useProfile";
 import type { UserType } from "@/store/user/useProfile";
-import { useStore as useFBUserStore } from "@/store/useFirebase";
+import { useStore as useFBStore } from "@/store/useFirebase";
 
 import { validateFields } from "@/utils/fieldValidate";
 import { error as er } from "@/utils/error";
 
+import { AUTH_ERROR_CODES_ENUM as AECU } from "@/services/Firebase";
+
 export class User {
   private _email: string;
+  private static collection = "users";
 
   /**
    * Email must be valid
@@ -19,7 +22,7 @@ export class User {
         value: email,
       },
     ]);
-    if (hasErrors.email?.length) throw er.createError("Invalid Email!");
+    if (hasErrors?.email?.length) throw er.create("Invalid Email!");
 
     this._email = email;
   }
@@ -29,37 +32,64 @@ export class User {
     return uups.data;
   }
 
-  get isLoading() {
+  // static methods
+  //////////////////
+
+  static get isLoading() {
     const uups = useUserProfileStore();
     return uups.isLoading;
   }
 
-  set isLoading(data: boolean) {
+  static set isLoading(data: boolean) {
     const uups = useUserProfileStore();
     uups.isLoading = data;
   }
 
-  async register(password: string) {
-    const fbUserStore = useFBUserStore();
-    await fbUserStore.instance?.createUserWithEmailAndPassword(
-      this._email,
-      password
+  static async register(data: {
+    username: string;
+    email: string;
+    password: string;
+  }) {
+    const fbStore = useFBStore();
+    const userRes = await fbStore.instance?.createUserWithEmailAndPassword(
+      data.email,
+      data.password
     );
+
+    // check if email and username exist
+    try {
+      const usrFound = await fbStore.instance?.read(User.collection, [
+        {
+          field: "email",
+          value: data.email,
+        },
+      ]);
+      if (usrFound?.size)
+        throw er.create("Email already existed!", AECU.EMAIL_EXISTS);
+    } catch (error: any) {
+      if (error.code === AECU.EMAIL_EXISTS)
+        throw er.create("Email already existed!", AECU.EMAIL_EXISTS);
+    }
+
+    // add username to users
+    await fbStore.instance?.write(User.collection, {
+      username: data.username,
+      email: data.email,
+    });
   }
 
-  async signIn(password: string) {
-    const fbUserStore = useFBUserStore();
+  static async signIn(data: { email: string; password: string }) {
+    const fbStore = useFBStore();
 
     try {
-      const userCreds = await fbUserStore.instance?.signInWithEmailAndPassword(
-        this._email,
-        password
+      const userCreds = await fbStore.instance?.signInWithEmailAndPassword(
+        data.email,
+        data.password
       );
 
       if (userCreds) {
-        this.data.email = userCreds.user.email || "";
-        this.isLoading = true; // test
-      } else throw error.createError("No email!");
+        data.email = userCreds.user.email || "";
+      } else throw error.create("No email!");
 
       console.log("userCreds", userCreds);
     } catch (error) {
